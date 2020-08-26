@@ -3,7 +3,7 @@
 timestamp=`date +%Y-%m-%d_%H%M%S`
 echo "Program started at $timestamp"
 
-o=output
+o=../output
 r=$o/raw
 p=$r/positive-cases
 t=$r/tests
@@ -34,14 +34,14 @@ down=download-raw-data.r
 echo "Downloading case-line data"
 pURL="$url1FLDOH/Florida_COVID19_Case_Line_Data_NEW/$url2"
 Rscript $down $pURL $p/ $caseLineFile $m/latest-case-line-data.csv
-ret1=$?
-echo $ret1
+# ret1=$?
+# echo $ret1
 
 echo "Downloading COVID-19 testing data"
 tURL="$url1FLDOH/Florida_Testing/$url2"
 Rscript $down $tURL $t/ $testsByCountyFile $m/latest-testing-data.csv
-ret2=$?
-echo $ret2
+# ret2=$?
+# echo $ret2
 
 echo "Downloading indicators data"
 Rscript $down "$url1FLDOH/Florida_COVID19_Cases_by_County_Indicators_vw/$url2" $i/ $indicatorsFile $m/latest-testing-data.csv
@@ -59,20 +59,20 @@ Rscript $down "$url1FloridaCOVIDAction/FCA_Florida_COVID19_Deaths_in_Care_Facili
 echo "Downloading long-term care facility cases data"
 Rscript $down "$url1FloridaCOVIDAction/FCA_Florida_COVID19_Cases_in_Long_Term_Care_Facilities/$url2" $fca2/ $fca2File $m/latest-hospital-data.csv
 
-if [[ $ret1 -eq 1 && $ret2 -eq 1 ]]; then
-	echo "Exiting program"
-	exit
-fi
+# if [[ $ret1 -eq 1 && $ret2 -eq 1 ]]; then
+# 	echo "Exiting program"
+# 	exit
+# fi
 
-echo "Making data files for most charts."
-od=$o/datawrapper
-Rscript make-datafiles-for-charts.r $caseLineFile $testsByCountyFile $od $ret1 $ret2 $timestamp $t
+# echo "Making data files for most charts."
+# od=$o/datawrapper
+# Rscript make-datafiles-for-charts.r $caseLineFile $testsByCountyFile $od $ret1 $ret2 $timestamp $t
 
-echo "Making data files for coronavirus death charts."
-Rscript deaths-by-date.r $p $od
+# echo "Making data files for coronavirus death charts."
+# Rscript deaths-by-date.r $p $od
 
-echo "Making data files for Google Sheets for other reporters"
-Rscript cases-reported-by-county-and-date.r $t $m
+# echo "Making data files for Google Sheets for other reporters"
+# Rscript cases-reported-by-county-and-date.r $t $m
 
-echo "Updating charts"
-Rscript update-charts.r $timestamp $od/county.csv $od/south-fl.csv $ret1 $ret2
+# echo "Updating charts"
+# Rscript update-charts.r $timestamp $od/county.csv $od/south-fl.csv $ret1 $ret2

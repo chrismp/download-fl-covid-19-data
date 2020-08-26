@@ -1,8 +1,0 @@
-*.lock
-*.Rproj
-*.log
-.RData
-.Renviron
-.Rhistory
-.Rproj.user
-output

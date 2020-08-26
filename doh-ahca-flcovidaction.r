@@ -69,7 +69,7 @@ if(length(previousDataFileName)>0){
     row.names = F
   )
   
-  print("Comparing latest state data to most recently downloaded data file.")
+  print("Comparing latest data to most recently downloaded data file.")
   notDownloadingHospitalBedData <- !grepl("HOSPITALS_esri",args[1],fixed=T)
   if (notDownloadingHospitalBedData) {
     if(file.size(previousDataFileName)>=file.size(tmp)){
