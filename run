@@ -29,7 +29,7 @@ url1Hospitals="https://services.arcgis.com/3wFbqsFPLeKqOlIK/ArcGIS/rest/services
 url1FloridaCOVIDAction="https://services2.arcgis.com/QTlu74VtgQxQNkN3/arcgis/rest/services/"
 url2="FeatureServer/0/query?f=json&resultType=standard&where=1%3D1&returnGeometry=false&outFields=*"
 
-down=download-raw-data.r
+down=doh-ahca-flcovidaction.r
 
 echo "Downloading case-line data"
 pURL="$url1FLDOH/Florida_COVID19_Case_Line_Data_NEW/$url2"
