@@ -81,7 +81,8 @@ if(length(previousDataFileName)>0){
       stop(1)
     }
   } else {
-    previousData <- read.csv(previousDataFileName)
+    # previousData <- read.csv(previousDataFileName)
+    previousData <- fread(previousDataFileName)
     
     if(max(outdf$EditDate)==max(previousData$EditDate)){
       print("Hospital beds data has not been changed.")
