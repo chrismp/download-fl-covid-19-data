@@ -4,7 +4,7 @@ pkgs <- c("jsonlite","data.table")
 
 for(x in pkgs){
   if(!is.element(x, installed.packages()[,1])){
-    install.packages(x)
+    install.packages(x,repo="http://cran.rstudio.com/")
   } else {
     print(paste(x, " library already installed"))
   }
@@ -75,7 +75,9 @@ if(length(previousDataFileName)>0){
   print("Comparing latest data to most recently downloaded data file.")
   notDownloadingHospitalBedData <- !grepl("HOSPITALS_esri",args[1],fixed=T)
   if (notDownloadingHospitalBedData) {
-    if(file.size(previousDataFileName)>=file.size(tmp)){
+    print(paste0("Previously downloaded file size: ",file.size(previousDataFileName)))
+    print(paste0("Downloaded file size: ",file.size(tmp)))
+    if(file.size(previousDataFileName)==file.size(tmp)){
       print("State's latest data has not been changed.")
       file.remove(tmp)
       stop(1)
@@ -106,3 +108,4 @@ write.csv(
   na = '',
   row.names = F
 )
+print("===========")
