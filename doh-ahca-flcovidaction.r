@@ -1,6 +1,6 @@
 args <- commandArgs(trailingOnly=TRUE)
 
-pkgs <- c("jsonlite")
+pkgs <- c("jsonlite","data.table")
 
 for(x in pkgs){
   if(!is.element(x, installed.packages()[,1])){
@@ -11,6 +11,7 @@ for(x in pkgs){
 }
 
 library(jsonlite)
+library(data.table)
 
 options(scipen = 999)
 
@@ -59,7 +60,9 @@ downloadedFiles <- list.files(
 
 previousDataFileName <- downloadedFiles[length(downloadedFiles)]
 if(length(previousDataFileName)>0){
-  latestFileDF <- read.csv(previousDataFileName)  
+  # latestFileDF <- read.csv(previousDataFileName)  
+  latestFileDF <- fread(previousDataFileName)
+  
   
   tmp <- "temp.csv"
   write.csv(
