@@ -31,9 +31,9 @@ url2="FeatureServer/0/query?f=json&resultType=standard&where=1%3D1&returnGeometr
 
 down=doh-ahca-flcovidaction.r
 
-echo "Downloading case-line data"
-pURL="$url1FLDOH/Florida_COVID19_Case_Line_Data_NEW/$url2"
-Rscript $down $pURL $p/ $caseLineFile $m/latest-case-line-data.csv
+# echo "Downloading case-line data"
+# pURL="$url1FLDOH/Florida_COVID19_Case_Line_Data_NEW/$url2"
+# Rscript $down $pURL $p/ $caseLineFile $m/latest-case-line-data.csv
 
 echo "Downloading COVID-19 testing data"
 tURL="$url1FLDOH/Florida_Testing/$url2"
