@@ -1,6 +1,6 @@
 args <- commandArgs(trailingOnly=TRUE)
 
-pkgs <- c("jsonlite","data.table")
+pkgs <- c("jsonlite","data.table","dplyr")
 
 for(x in pkgs){
   if(!is.element(x, installed.packages()[,1])){
@@ -12,6 +12,7 @@ for(x in pkgs){
 
 library(jsonlite)
 library(data.table)
+library(dplyr)
 
 options(scipen = 999)
 
@@ -60,8 +61,8 @@ downloadedFiles <- list.files(
 
 previousDataFileName <- downloadedFiles[length(downloadedFiles)]
 if(length(previousDataFileName)>0){
-  # latestFileDF <- read.csv(previousDataFileName)  
-  latestFileDF <- fread(previousDataFileName)
+  # latestFileData <- read.csv(previousDataFileName)  
+  latestFileData <- fread(previousDataFileName)
   
   
   tmp <- "temp.csv"
@@ -75,12 +76,30 @@ if(length(previousDataFileName)>0){
   print("Comparing latest data to most recently downloaded data file.")
   notDownloadingHospitalBedData <- !grepl("HOSPITALS_esri",args[1],fixed=T)
   if (notDownloadingHospitalBedData) {
-    print(paste0("Previously downloaded file size: ",file.size(previousDataFileName)))
-    print(paste0("Downloaded file size: ",file.size(tmp)))
-    if(file.size(previousDataFileName)==file.size(tmp)){
-      print("State's latest data has not been changed.")
-      file.remove(tmp)
-      stop(1)
+    if(grepl('Florida_Testing',args[1],fixed=T)){
+      state1 <- filter(
+        .data = outdf,
+        County_1=='State'
+      )
+      
+      state2 <- filter(
+        .data = latestFileData,
+        County_1=='State'
+      )
+      
+      if(state1$TPositive == state2$TPositive){
+        print("State's latest data has not been changed.")
+        file.remove(tmp)
+        stop(1)
+      }
+    } else{
+      print(paste0("Previously downloaded file size: ",file.size(previousDataFileName)))
+      print(paste0("Downloaded file size: ",file.size(tmp)))
+      if(file.size(previousDataFileName)==file.size(tmp)){
+        print("State's latest data has not been changed.")
+        file.remove(tmp)
+        stop(1)
+      }
     }
   } else {
     # previousData <- read.csv(previousDataFileName)
