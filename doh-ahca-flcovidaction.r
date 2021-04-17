@@ -17,38 +17,49 @@ library(dplyr)
 options(scipen = 999)
 
 print("Starting script to download raw data")
-url <- args[1]
-offset <- 0
 esriStandardMaxLength <- 32000
 data <- list()
 
-repeat{
-  fullURL <- paste0(url,"&resultOffset=",offset)
-  print(paste0(
-    "Opening URL: ",
-    fullURL
-  ))
-  
-  json <- fromJSON(
-    txt = fullURL
-  )
-  
-  if("error" %in% names(json)){
-    print(paste0("ERROR CODE: ",json$error$code))
-    print(paste0("ERROR MESSAGE: ",json$error$message))
-    print(paste0("ERROR DETAIL: ",json$error$details))
-    print("===")
-    Sys.sleep(5)
-    next
+trgtYr <- 2020
+curYear <- as.integer(format(Sys.Date(),'%Y'))
+repeat {
+  if (trgtYr > curYear) break
+  url <- paste0(args[1],'/Case_Data_',trgtYr,'/',args[2])
+  offset <- 0
+  repeat{
+    fullURL <- paste0(url,"&resultOffset=",offset)
+    print(paste0(
+      "Opening URL: ",
+      fullURL
+    ))
+    
+    json <- fromJSON(
+      txt = fullURL
+    )
+    
+    if("error" %in% names(json)){
+      print(paste0("ERROR CODE: ",json$error$code))
+      print(paste0("ERROR MESSAGE: ",json$error$message))
+      print(paste0("ERROR DETAIL: ",json$error$details))
+      print("===")
+      Sys.sleep(5)
+      next
+    }
+    
+    if(length(json$features)==0){
+      print("NO CASES LEFT TO PROCESS FOR THIS YEAR")
+      trgtYr <- trgtYr + 1
+      break
+    } 
+    
+    latestListIndex <- length(data)+1
+    data[[latestListIndex]] <- json$features$attributes
+    
+    offset <- offset + esriStandardMaxLength
   }
   
-  if(length(json$features)==0) break
-  
-  latestListIndex <- length(data)+1
-  data[[latestListIndex]] <- json$features$attributes
-  
-  offset <- offset + esriStandardMaxLength
 }
+
 
 print("Done parsing JSON")
 
@@ -123,7 +134,7 @@ write.csv(
 
 write.csv(
   x = outdf,
-  file = args[3],
+  file = args[5],
   na = '',
   row.names = F
 )
