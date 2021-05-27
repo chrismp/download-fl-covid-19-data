@@ -1,4 +1,5 @@
 args <- commandArgs(trailingOnly=TRUE)
+print(args)
 
 pkgs <- c("jsonlite","data.table","dplyr")
 
@@ -22,9 +23,10 @@ data <- list()
 
 trgtYr <- 2020
 curYear <- as.integer(format(Sys.Date(),'%Y'))
+url <- paste0(args[1],'/Case_Data_2020/',args[2])
+feed2021 <- '/Florida_COVID19_Case_Line_Data_2021/'
 repeat {
   if (trgtYr > curYear) break
-  url <- paste0(args[1],'/Case_Data_',trgtYr,'/',args[2])
   offset <- 0
   repeat{
     fullURL <- paste0(url,"&resultOffset=",offset)
@@ -49,6 +51,7 @@ repeat {
     if(length(json$features)==0){
       print("NO CASES LEFT TO PROCESS FOR THIS YEAR")
       trgtYr <- trgtYr + 1
+      url <- paste0(args[1],feed2021,args[2])
       break
     } 
     
@@ -60,21 +63,22 @@ repeat {
   
 }
 
-
 print("Done parsing JSON")
 
-outdf <- do.call(rbind,data)
+# outdf <- do.call(rbind,data)
+outdf <- rbindlist(
+  l = data,
+  fill = T
+)
 
 downloadedFiles <- list.files(
-  path = args[2],
+  path = args[3],
   full.names = T
 )
 
 previousDataFileName <- downloadedFiles[length(downloadedFiles)]
 if(length(previousDataFileName)>0){
-  # latestFileData <- read.csv(previousDataFileName)  
   latestFileData <- fread(previousDataFileName)
-  
   
   tmp <- "temp.csv"
   write.csv(
@@ -85,43 +89,50 @@ if(length(previousDataFileName)>0){
   )
   
   print("Comparing latest data to most recently downloaded data file.")
-  notDownloadingHospitalBedData <- !grepl("HOSPITALS_esri",args[1],fixed=T)
-  if (notDownloadingHospitalBedData) {
-    if(grepl('Florida_Testing',args[1],fixed=T)){
-      state1 <- filter(
-        .data = outdf,
-        County_1=='State'
-      )
-      
-      state2 <- filter(
-        .data = latestFileData,
-        County_1=='State'
-      )
-      
-      if(state1$TPositive == state2$TPositive){
-        print("State's latest data has not been changed.")
-        file.remove(tmp)
-        stop(1)
-      }
-    } else{
-      print(paste0("Previously downloaded file size: ",file.size(previousDataFileName)))
-      print(paste0("Downloaded file size: ",file.size(tmp)))
-      if(file.size(previousDataFileName)==file.size(tmp)){
-        print("State's latest data has not been changed.")
-        file.remove(tmp)
-        stop(1)
-      }
-    }
-  } else {
-    # previousData <- read.csv(previousDataFileName)
-    previousData <- fread(previousDataFileName)
-    
-    if(max(outdf$EditDate)==max(previousData$EditDate)){
-      print("Hospital beds data has not been changed.")
-      file.remove(tmp)
-      stop(1)
-    }
+  print(paste0("Previously downloaded file size: ",file.size(previousDataFileName)))
+  print(paste0("Downloaded file size: ",file.size(tmp)))
+  if(file.size(previousDataFileName)==file.size(tmp)){
+    print("State's latest data has not been changed.")
+    file.remove(tmp)
+    stop(1)
   }
+  # notDownloadingHospitalBedData <- !grepl("HOSPITALS_esri",args[1],fixed=T)
+  # if (notDownloadingHospitalBedData) {
+  #   if(grepl('Florida_Testing',args[1],fixed=T)){
+  #     state1 <- filter(
+  #       .data = outdf,
+  #       County_1=='State'
+  #     )
+  #     
+  #     state2 <- filter(
+  #       .data = latestFileData,
+  #       County_1=='State'
+  #     )
+  #     
+  #     if(state1$TPositive == state2$TPositive){
+  #       print("State's latest data has not been changed.")
+  #       file.remove(tmp)
+  #       stop(1)
+  #     }
+  #   } else{
+  #     print(paste0("Previously downloaded file size: ",file.size(previousDataFileName)))
+  #     print(paste0("Downloaded file size: ",file.size(tmp)))
+  #     if(file.size(previousDataFileName)==file.size(tmp)){
+  #       print("State's latest data has not been changed.")
+  #       file.remove(tmp)
+  #       stop(1)
+  #     }
+  #   }
+  # } else {
+  #   # previousData <- read.csv(previousDataFileName)
+  #   previousData <- fread(previousDataFileName)
+  #   
+  #   if(max(outdf$EditDate)==max(previousData$EditDate)){
+  #     print("Hospital beds data has not been changed.")
+  #     file.remove(tmp)
+  #     stop(1)
+  #   }
+  # }
 }
 
 

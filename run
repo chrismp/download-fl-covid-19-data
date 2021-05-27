@@ -32,25 +32,28 @@ url2="FeatureServer/0/query?f=json&resultType=standard&where=1%3D1&returnGeometr
 nc=non-caseline-data.r
 
 echo "Downloading case-line data"
-pURL="$url1FLDOH/Florida_COVID19_Case_Line_Data_NEW/$url2"
+# pURL="$url1FLDOH/Florida_COVID19_Case_Line_Data_NEW/$url2"
+# caselinedata2020URL=$url1FLDOH/Case_Data_2020/$url2
+# caselinedata2021URL=$url1FLDOH/Florida_COVID19_Case_Line_Data_2021/$url2
 Rscript caseline-data.r $url1FLDOH $url2 $p/ $caseLineFile $m/latest-case-line-data.csv
 
-echo "Downloading COVID-19 testing data"
-tURL="$url1FLDOH/Florida_Testing/$url2"
-Rscript $nc $tURL $t/ $testsByCountyFile $m/latest-testing-data.csv
 
-echo "Downloading indicators data"
-Rscript $nc "$url1FLDOH/Florida_COVID19_Cases_by_County_Indicators_vw/$url2" $i/ $indicatorsFile $m/latest-testing-data.csv
+# echo "Downloading COVID-19 testing data"
+# tURL="$url1FLDOH/Florida_Testing/$url2"
+# Rscript $nc $tURL $t/ $testsByCountyFile $m/latest-testing-data.csv
 
-echo "Downloading AHCA hospitals data"
-hURL="$url1Hospitals/HOSPITALS_esri/$url2"
-Rscript $nc $hURL $h/ $hospitalBedFile $m/latest-hospital-data.csv
+# echo "Downloading indicators data"
+# Rscript $nc "$url1FLDOH/Florida_COVID19_Cases_by_County_Indicators_vw/$url2" $i/ $indicatorsFile $m/latest-testing-data.csv
 
-echo "Downloading surveillance and syndromic data"
-Rscript $nc "$url1FloridaCOVIDAction/Florida_COVID_Action_Surveillance_and_Syndromic_Data/$url2" $fca1/ $fca1File $m/latest-hospital-data.csv
+# echo "Downloading AHCA hospitals data"
+# hURL="$url1Hospitals/HOSPITALS_esri/$url2"
+# Rscript $nc $hURL $h/ $hospitalBedFile $m/latest-hospital-data.csv
 
-echo "Downloading deaths in care facilities data"
-Rscript $nc "$url1FloridaCOVIDAction/FCA_Florida_COVID19_Deaths_in_Care_Facilities/$url2" $fca2/ $fca2File $m/latest-hospital-data.csv
+# echo "Downloading surveillance and syndromic data"
+# Rscript $nc "$url1FloridaCOVIDAction/Florida_COVID_Action_Surveillance_and_Syndromic_Data/$url2" $fca1/ $fca1File $m/latest-hospital-data.csv
 
-echo "Downloading long-term care facility cases data"
-Rscript $nc "$url1FloridaCOVIDAction/FCA_Florida_COVID19_Cases_in_Long_Term_Care_Facilities/$url2" $fca2/ $fca2File $m/latest-hospital-data.csv
+# echo "Downloading deaths in care facilities data"
+# Rscript $nc "$url1FloridaCOVIDAction/FCA_Florida_COVID19_Deaths_in_Care_Facilities/$url2" $fca2/ $fca2File $m/latest-hospital-data.csv
+
+# echo "Downloading long-term care facility cases data"
+# Rscript $nc "$url1FloridaCOVIDAction/FCA_Florida_COVID19_Cases_in_Long_Term_Care_Facilities/$url2" $fca2/ $fca2File $m/latest-hospital-data.csv
